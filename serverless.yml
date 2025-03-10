@@ -3,6 +3,8 @@ org: sapientum8
 service: aws-python-http-api
 
 custom:
+  pythonRequirements:
+    dockerizePip: non-linux
   domain: svroic.org
   s3_role_resource: arn:aws:iam::${aws:accountId}:role/s3-access-role
 
@@ -63,14 +65,22 @@ resources:
               KeyType: HASH
             - AttributeName: sk
               KeyType: RANGE
-          ProvisionedThroughput:
-            ReadCapacityUnits: 1
-            WriteCapacityUnits: 1
+          BillingMode: PAY_PER_REQUEST
           TableName: Library_${sls:stage}
-  # - ${file(cloudform.yml)}
+  - ${file(cloudform.yml)}
   - Outputs:
       Domain:
         Value: "https://${sls:stage}.${self:custom.domain}"
+
+package:
+  patterns:
+    - src/**
+    - handler.py
+    - requirements.txt
+
+  individually: true
+  # artifact: path/to/my-artifact.zip
+  excludeDevDependencies: true
 
 plugins:
   - serverless-python-requirements
