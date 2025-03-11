@@ -42,6 +42,15 @@ provider:
     LOG_LEVEL: INFO
     VAR1: ${file(./config.${sls:stage}.json):VAR1}
 
+package:
+  individually: true
+  include:
+    - '!./**'
+    - './cart/hello/**'
+    - './cart/howdy/**'
+  exclude:
+    - '**'
+
 functions:
   hello:
     handler: index.handler
@@ -79,15 +88,6 @@ resources:
   - Outputs:
       Domain:
         Value: "https://${sls:stage}.${self:custom.domain}"
-
-package:
-  individually: true
-  include:
-    - '!./**'
-    - './cart/hello/**'
-    - './cart/howdy/**'
-  exclude:
-    - '**'
 
 plugins:
   - serverless-python-requirements
