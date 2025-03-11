@@ -44,10 +44,18 @@ provider:
 
 functions:
   hello:
-    handler: handler.hello
+    handler: index.handler
+    module: cart/hello
     events:
       - httpApi:
           path: /
+          method: get
+  howdy:
+    handler: index.handler
+    module: cart/howdy
+    events:
+      - httpApi:
+          path: /howdy
           method: get
 
 resources:
@@ -73,14 +81,13 @@ resources:
         Value: "https://${sls:stage}.${self:custom.domain}"
 
 package:
-  patterns:
-    - src/**
-    - handler.py
-    - requirements.txt
-
   individually: true
-  # artifact: path/to/my-artifact.zip
-  excludeDevDependencies: true
+  include:
+    - '!./**'
+    - './cart/hello/**'
+    - './cart/howdy/**'
+  exclude:
+    - '**'
 
 plugins:
   - serverless-python-requirements
